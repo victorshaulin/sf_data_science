@@ -1,7 +1,7 @@
 import numpy as np
 
 def random_predict(number:int=1) -> int:
-    """Рандомно угадываем число
+    """Угадываем число методом дихотомии.
 
     Args:
         number (int, optional): Загаданное число. Defaults to 1.
@@ -10,16 +10,28 @@ def random_predict(number:int=1) -> int:
         int: Число попыток
     """
 
-    count = 0
-
-    while True:
+    if number == 1: # одну попытку тратим на 1
+        return 1
+    elif number == 100: # вторую на 100
+        return 2
+    elif number == 50: # третью на 50
+        return 3
+    count = 2 # 2, потому что продолжаем на 50
+    predict = 50 # продолжим с середины
+    
+    # попытки угадать другие числа    
+    mi = 1; ma = 100 # заводим рамку, которая постепенно будет сужаться
+    while number != predict:
         count += 1
-        predict_number = np.random.randint(1, 101) # предполагаемое число
-        if number == predict_number:
-            break # выход из цикла, если угадали
-    return(count)
+        if number > predict: # если загаданное число больше, сдвинем минимум до этого предсказания
+            mi = predict
+        elif number < predict: # иначе, если загаданное число меньше, то сдвинем максимум
+            ma = predict
 
-# print(f'Количество попыток: {random_predict()}')
+        # установим предсказание примерно посередине минимума и максимума
+        predict = ((ma - mi) // 2) + mi
+
+    return(count)
 
 def score_game(random_predict) -> int:
     """За какое количество попыток в среднем из 1000 подходов угадывает наш алгоритм
@@ -46,3 +58,4 @@ def score_game(random_predict) -> int:
 if __name__ == '__main__':
     # RUN
     score_game(random_predict)
+    
